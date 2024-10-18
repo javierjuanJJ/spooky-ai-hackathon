@@ -8,7 +8,6 @@ import clsx, { ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import UploadImage from "./lib/utils/UploadImage";
 import {ImageTransform} from "./lib/utils/TransformImage";
-import {CloudinaryImage} from "@cloudinary/url-gen";
 
 // Define the cn function
 function cn(...inputs: ClassValue[]) {
