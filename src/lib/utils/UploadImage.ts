@@ -8,7 +8,6 @@ export default function UploadImage(file: File, callback) {
         form.append("file", file, file.name);
         const apikey = process.env.PUBLIC_CLOUDINARY_API_KEY ?? "";
         const cloudName = process.env.PUBLIC_CLOUDINARY_CLOUD_NAME ?? "";
-        const apiSecret = process.env.CLOUDINARY_API_SECRET ?? "";
         const uploadPreset = process.env.UPLOAD_PRESET ?? "";
 
         form.append("upload_preset", uploadPreset);

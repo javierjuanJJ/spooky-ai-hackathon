@@ -136,7 +136,6 @@ export default function VectorizeClone() {
   const [mediaType, setMediaType] = useState<MediaType>("image")
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
-  const [cldImagePreview, setCldImagePreview] = useState<CloudinaryImage | null>(null)
   const [sliderValue, setSliderValue] = useState(1)
 
   const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
