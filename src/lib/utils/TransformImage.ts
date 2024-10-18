@@ -1,4 +1,8 @@
 'use client'
+const {
+    REACT_APP_PUBLIC_CLOUDINARY_CLOUD_NAME,
+} = process.env;
+
 
 const PROMPTS = [
     "Change all persons into a ghosts",
@@ -15,15 +19,12 @@ const PROMPTS = [
 ]
 
 function convertToUrl(array: String[],spookyQuantity: number) {
-    return array[spookyQuantity].replace(" ", "%20");
+    return array[spookyQuantity - 1].replaceAll(" ", "%20");
 }
 
 export function ImageTransform(parse, spookyQuantity, callback) {
-    // const publicId = parse['public_id'] || ''
     const publicId = parse['public_id']
     console.log("Public_id a publicar: ", publicId)
 
-    const cloudName = process.env.PUBLIC_CLOUDINARY_CLOUD_NAME ?? "";
-
-    callback(`https://res.cloudinary.com/${cloudName}/image/upload/e_gen_background_replace:prompt_${(convertToUrl(PROMPTS,spookyQuantity))}/${publicId}.jpg`)
+    callback(`https://res.cloudinary.com/${REACT_APP_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/e_gen_background_replace:prompt_${(convertToUrl(PROMPTS,spookyQuantity))}/${publicId}.jpg`)
 }

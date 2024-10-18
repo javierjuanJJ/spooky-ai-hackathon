@@ -8,13 +8,14 @@ import clsx, { ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import UploadImage from "./lib/utils/UploadImage";
 import {ImageTransform} from "./lib/utils/TransformImage";
-
+const {
+  REACT_APP_PUBLIC_CLOUDINARY_CLOUD_NAME,
+} = process.env;
 // Define the cn function
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
-console.log("Cloud name : ", process.env)
-console.log("Cloud name : ", process.env.PUBLIC_CLOUDINARY_CLOUD_NAME)
+console.log("Cloud name : ", REACT_APP_PUBLIC_CLOUDINARY_CLOUD_NAME)
 const Tabs = TabsPrimitive.Root
 
 const TabsList = React.forwardRef<

@@ -1,18 +1,22 @@
 'use client'
 import $ from 'jquery';
-const { PUBLIC_CLOUDINARY_CLOUD_NAME,PUBLIC_CLOUDINARY_API_KEY,UPLOAD_PRESET } = process.env;
+const {
+    REACT_APP_PUBLIC_CLOUDINARY_CLOUD_NAME,
+    REACT_APP_PUBLIC_CLOUDINARY_API_KEY,
+    REACT_APP_UPLOAD_PRESET
+} = process.env;
 export default function UploadImage(file: File, callback) {
     try {
 
         const form = new FormData();
         form.append("file", file, file.name);
 
-        form.append("upload_preset", UPLOAD_PRESET);
+        form.append("upload_preset", REACT_APP_UPLOAD_PRESET);
         form.append("public_id", `${file.name}`);
-        form.append("api_key", PUBLIC_CLOUDINARY_API_KEY);
+        form.append("api_key", REACT_APP_PUBLIC_CLOUDINARY_API_KEY);
 
-        $.ajax(`https://api.cloudinary.com/v1_1/${PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
-            "url": `https://api.cloudinary.com/v1_1/${PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        $.ajax(`https://api.cloudinary.com/v1_1/${REACT_APP_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+            "url": `https://api.cloudinary.com/v1_1/${REACT_APP_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
             "method": "POST",
             "timeout": 0,
             "processData": false,
