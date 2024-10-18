@@ -6,12 +6,15 @@ import * as TabsPrimitive from "@radix-ui/react-tabs"
 import * as SliderPrimitive from "@radix-ui/react-slider"
 import clsx, { ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import UploadImage from "./lib/utils/UploadImage";
+import {ImageTransform} from "./lib/utils/TransformImage";
 
 // Define the cn function
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
-
+console.log("Cloud name : ", process.env)
+console.log("Cloud name : ", process.env.PUBLIC_CLOUDINARY_CLOUD_NAME)
 const Tabs = TabsPrimitive.Root
 
 const TabsList = React.forwardRef<
@@ -127,7 +130,7 @@ const Slider = React.forwardRef<
 Slider.displayName = SliderPrimitive.Root.displayName
 
 type MediaType = "image" | "video"
-
+// Function to be passed to the child
 export default function VectorizeClone() {
   const [mediaType, setMediaType] = useState<MediaType>("image")
   const [file, setFile] = useState<File | null>(null)
@@ -147,6 +150,9 @@ export default function VectorizeClone() {
     }
   }, [])
 
+
+
+
   const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
   }, [])
@@ -163,11 +169,27 @@ export default function VectorizeClone() {
     }
   }, [])
 
+
+
   const handleAction = useCallback(() => {
     if (file) {
       if (mediaType === "image") {
         console.log("Performing action with image:", file.name, "Slider value:", sliderValue)
         // Add your image processing logic here
+
+        UploadImage(file, (data) => {
+          if (data['secure_url']) {
+            setPreview(data['secure_url'])
+
+            ImageTransform(data, sliderValue, (response) => {
+              setPreview(response.toUrl())
+            })
+
+          }
+
+
+        })
+
       } else {
         console.log("Performing action with video:", file.name, "Slider value:", sliderValue)
         // Add your video processing logic here
