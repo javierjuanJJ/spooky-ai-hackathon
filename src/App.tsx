@@ -8,6 +8,7 @@ import clsx, { ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import UploadImage from "./lib/utils/UploadImage";
 import {ImageTransform} from "./lib/utils/TransformImage";
+import {CloudinaryImage} from "@cloudinary/url-gen";
 
 // Define the cn function
 function cn(...inputs: ClassValue[]) {
@@ -135,6 +136,7 @@ export default function VectorizeClone() {
   const [mediaType, setMediaType] = useState<MediaType>("image")
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
+  const [cldImagePreview, setCldImagePreview] = useState<CloudinaryImage | null>(null)
   const [sliderValue, setSliderValue] = useState(1)
 
   const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
@@ -182,7 +184,10 @@ export default function VectorizeClone() {
             setPreview(data['secure_url'])
 
             ImageTransform(data, sliderValue, (response) => {
-              setPreview(response.toUrl())
+              console.log("URL modificada: ",response)
+              //console.log("URL modificada: ",response)
+              // setCldImagePreview(response)
+              setPreview(response)
             })
 
           }
@@ -337,11 +342,13 @@ export default function VectorizeClone() {
                   <p className="text-sm text-gray-600">
                     {file?.name} - {(file?.size / 1024 / 1024).toFixed(2)} MB
                   </p>
+
                 </>
             ) : (
                 <div className="text-center p-6">
                   <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
                   <p className="mt-2 text-sm text-gray-600">Image preview will appear here</p>
+
                 </div>
             )}
           </div>

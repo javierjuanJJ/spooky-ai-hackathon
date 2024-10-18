@@ -6,13 +6,13 @@ export default function UploadImage(file: File, callback) {
 
         const form = new FormData();
         form.append("file", file, file.name);
-
         const apikey = process.env.PUBLIC_CLOUDINARY_API_KEY ?? "";
         const cloudName = process.env.PUBLIC_CLOUDINARY_CLOUD_NAME ?? "";
+        const apiSecret = process.env.CLOUDINARY_API_SECRET ?? "";
         const uploadPreset = process.env.UPLOAD_PRESET ?? "";
 
         form.append("upload_preset", uploadPreset);
-        form.append("public_id", `${file.name}p11151513`);
+        form.append("public_id", `${file.name}`);
         form.append("api_key", apikey);
 
         $.ajax(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
