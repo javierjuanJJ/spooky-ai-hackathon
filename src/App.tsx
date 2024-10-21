@@ -181,7 +181,7 @@ export default function VectorizeClone() {
       }
       reader.readAsDataURL(selectedFile)
     }
-  }, [])
+  }, [preview, previewVideo])
 
 
 
