@@ -25,6 +25,17 @@ function convertToUrl(array: String[],spookyQuantity: number) {
 export function ImageTransform(parse, spookyQuantity, callback) {
     const publicId = parse['public_id']
     console.log("Public_id a publicar: ", publicId)
+    let url = `https://res.cloudinary.com/${REACT_APP_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/e_gen_background_replace:prompt_${(convertToUrl(PROMPTS,spookyQuantity))}/`
 
-    callback(`https://res.cloudinary.com/${REACT_APP_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/e_gen_background_replace:prompt_${(convertToUrl(PROMPTS,spookyQuantity))}/${publicId}.jpg`)
+    if (spookyQuantity >= 4){
+        url+= `e_gen_remove:prompt_animals/`
+    }
+    if (spookyQuantity >= 8){
+        url+= `e_gen_replace:from_persons;to_ghosts/`
+    }
+
+    url += `${publicId}.jpg`
+
+    callback(url)
+    // callback(`https://res.cloudinary.com/${REACT_APP_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/e_gen_background_replace:prompt_${(convertToUrl(PROMPTS,spookyQuantity))}/${publicId}.jpg`)
 }

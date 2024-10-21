@@ -8,6 +8,8 @@ import clsx, { ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import UploadImage from "./lib/utils/UploadImage";
 import {ImageTransform} from "./lib/utils/TransformImage";
+import UploadVideo from "./lib/utils/UploadVideo";
+import {VideoTransform} from "./lib/utils/TransformVideo";
 const {
   REACT_APP_PUBLIC_CLOUDINARY_CLOUD_NAME,
 } = process.env;
@@ -136,6 +138,7 @@ export default function VectorizeClone() {
   const [mediaType, setMediaType] = useState<MediaType>("image")
   const [file, setFile] = useState<File | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
+  const [previewVideo, setPreviewVideo] = useState<string | null>(null)
   const [sliderValue, setSliderValue] = useState(1)
 
   const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
@@ -145,11 +148,15 @@ export default function VectorizeClone() {
       setFile(droppedFile)
       const reader = new FileReader()
       reader.onloadend = () => {
-        setPreview(reader.result as string)
+        if (preview || previewVideo ){
+          setPreview(reader.result as string)
+        }
+        else setPreviewVideo(reader.result as string)
+
       }
       reader.readAsDataURL(droppedFile)
     }
-  }, [])
+  }, [preview, previewVideo])
 
 
 
@@ -160,11 +167,17 @@ export default function VectorizeClone() {
 
   const handleFileInput = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
-    if (selectedFile && selectedFile.type.startsWith("image/")) {
+    if (selectedFile && (selectedFile.type.startsWith("image/") || selectedFile.type.startsWith("video/"))) {
       setFile(selectedFile)
       const reader = new FileReader()
       reader.onloadend = () => {
-        setPreview(reader.result as string)
+        if ( preview || previewVideo) {
+          setPreview(reader.result as string)
+        }
+        else {
+          setPreviewVideo(reader.result as string)
+        }
+
       }
       reader.readAsDataURL(selectedFile)
     }
@@ -173,10 +186,13 @@ export default function VectorizeClone() {
 
 
   const handleAction = useCallback(() => {
+
     if (file) {
+      console.log("URL modificada: ",file.name, mediaType)
       if (mediaType === "image") {
         console.log("Performing action with image:", file.name, "Slider value:", sliderValue)
         // Add your image processing logic here
+        setPreviewVideo(null)
 
         UploadImage(file, (data) => {
           if (data['secure_url']) {
@@ -197,6 +213,22 @@ export default function VectorizeClone() {
       } else {
         console.log("Performing action with video:", file.name, "Slider value:", sliderValue)
         // Add your video processing logic here
+        setPreview(null)
+
+        UploadVideo(file, (data) => {
+          if (data['secure_url']) {
+            setPreviewVideo(data['secure_url'])
+            console.log("URL modificada: ",data['secure_url'])
+            VideoTransform(data, sliderValue, (response) => {
+              console.log("URL modificada: ",response)
+              setPreviewVideo(response)
+            })
+
+          }
+
+
+        })
+
       }
     } else {
       console.log("No file selected")
@@ -209,15 +241,20 @@ export default function VectorizeClone() {
   }, [])
 
   const handleDownload = useCallback(() => {
-    if (file && preview) {
+    if (file && (preview || previewVideo)) {
+      const p = preview ? preview : previewVideo;
       const link = document.createElement('a')
-      link.href = preview
+      link.href = p
       link.download = file.name
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
     }
-  }, [file, preview])
+  }, [file, preview, previewVideo])
+
+  function handleActionCreateVideo() {
+
+  }
 
   return (
       <div className="container mx-auto p-4 max-w-4xl">
@@ -322,7 +359,14 @@ export default function VectorizeClone() {
               >
                 {mediaType === "image" ? "Process Image" : "Process Video"}
               </Button>
-              {file && preview && (
+              <Button
+                  className="flex-1"
+                  onClick={handleActionCreateVideo}
+                  style={{ backgroundColor: getSliderColor(sliderValue) }}
+              >
+                Create Video
+              </Button>
+              {file && (preview || previewVideo) && (
                   <Button
                       variant="outline"
                       className="flex-1"
@@ -335,9 +379,20 @@ export default function VectorizeClone() {
             </div>
           </div>
           <div className="flex flex-col items-center justify-center bg-gray-100 rounded-lg p-4">
-            {preview ? (
+            {(preview || previewVideo) ? (
                 <>
-                  <img src={preview} alt="Uploaded preview" className="max-w-full max-h-[400px] object-contain mb-4" />
+                  {mediaType === "image" ?
+                      <>
+                        <img src={preview} alt="Uploaded preview"
+                             className="max-w-full max-h-[400px] object-contain mb-4"/>
+                      </>
+                      :
+                      <>
+                        <video className="max-w-full max-h-[400px] object-contain mb-4">
+                          <source src={previewVideo} type="video/mp4"/>
+                        </video>
+                      </>}
+
                   <p className="text-sm text-gray-600">
                     {file?.name} - {(file?.size / 1024 / 1024).toFixed(2)} MB
                   </p>
