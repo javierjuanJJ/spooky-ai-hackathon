@@ -156,7 +156,7 @@ export default function VectorizeClone() {
 
   return (
       <div className="container mx-auto p-4 max-w-4xl">
-        <h1 className="text-3xl font-bold mb-6 text-center">Vectorize Clone</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center">Transformer Image & Video</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <Tabs defaultValue="image" onValueChange={(value) => setMediaType(value as MediaType)}>

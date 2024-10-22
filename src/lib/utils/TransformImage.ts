@@ -27,11 +27,8 @@ export function ImageTransform(parse, spookyQuantity, callback) {
     console.log("Public_id a publicar: ", publicId)
     let url = `https://res.cloudinary.com/${REACT_APP_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/e_gen_background_replace:prompt_${(convertToUrl(PROMPTS,spookyQuantity))}/`
 
-    if (spookyQuantity >= 4){
+    if (spookyQuantity >= 5){
         url+= `e_gen_remove:prompt_animals/`
-    }
-    if (spookyQuantity >= 8){
-        url+= `e_gen_replace:from_persons;to_ghosts/`
     }
 
     url += `${publicId}.jpg`
