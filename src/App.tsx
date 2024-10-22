@@ -1,135 +1,36 @@
 "use client"
 
-import React, { useState, useCallback } from "react"
-import { ImageIcon, VideoIcon, UploadIcon, DownloadIcon } from "lucide-react"
+import React, {useCallback, useState} from "react"
+import {DownloadIcon, ImageIcon, UploadIcon, VideoIcon} from "lucide-react"
 import * as TabsPrimitive from "@radix-ui/react-tabs"
 import * as SliderPrimitive from "@radix-ui/react-slider"
-import clsx, { ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+
 import UploadImage from "./lib/utils/UploadImage";
 import {ImageTransform} from "./lib/utils/TransformImage";
 import UploadVideo from "./lib/utils/UploadVideo";
 import {VideoTransform} from "./lib/utils/TransformVideo";
-const {
-  REACT_APP_PUBLIC_CLOUDINARY_CLOUD_NAME,
-} = process.env;
-// Define the cn function
-function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
-console.log("Cloud name : ", REACT_APP_PUBLIC_CLOUDINARY_CLOUD_NAME)
-const Tabs = TabsPrimitive.Root
+import {Tabs} from "./components/Tabs";
+import {TabsList} from "./components/TabsList";
+import {TabsTrigger} from "./components/TabsTrigger";
+import {TabsContent} from "./components/TabsContent";
+import {Button} from "./components/Button";
+import {Slider} from "./components/Slider";
+import {Card} from "./components/Card";
+import {CardContent} from "./components/CardContent";
 
-const TabsList = React.forwardRef<
-    React.ElementRef<typeof TabsPrimitive.List>,
-    React.ComponentPropsWithoutRef<typeof TabsPrimitive.List>
->(({ className, ...props }, ref) => (
-    <TabsPrimitive.List
-        ref={ref}
-        className={cn(
-            "inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
-            className
-        )}
-        {...props}
-    />
-))
+
 TabsList.displayName = TabsPrimitive.List.displayName
 
-const TabsTrigger = React.forwardRef<
-    React.ElementRef<typeof TabsPrimitive.Trigger>,
-    React.ComponentPropsWithoutRef<typeof TabsPrimitive.Trigger>
->(({ className, ...props }, ref) => (
-    <TabsPrimitive.Trigger
-        ref={ref}
-        className={cn(
-            "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm",
-            className
-        )}
-        {...props}
-    />
-))
 TabsTrigger.displayName = TabsPrimitive.Trigger.displayName
 
-const TabsContent = React.forwardRef<
-    React.ElementRef<typeof TabsPrimitive.Content>,
-    React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
->(({ className, ...props }, ref) => (
-    <TabsPrimitive.Content
-        ref={ref}
-        className={cn(
-            "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-            className
-        )}
-        {...props}
-    />
-))
 TabsContent.displayName = TabsPrimitive.Content.displayName
 
-const Button = React.forwardRef<
-    HTMLButtonElement,
-    React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"
-}
->(({ className, variant = "default", ...props }, ref) => {
-  return (
-      <button
-          className={cn(
-              "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-              {
-                "bg-primary text-primary-foreground hover:bg-primary/90": variant === "default",
-                "bg-destructive text-destructive-foreground hover:bg-destructive/90": variant === "destructive",
-                "border border-input bg-background hover:bg-accent hover:text-accent-foreground": variant === "outline",
-                "bg-secondary text-secondary-foreground hover:bg-secondary/80": variant === "secondary",
-                "hover:bg-accent hover:text-accent-foreground": variant === "ghost",
-                "text-primary underline-offset-4 hover:underline": variant === "link",
-              },
-              className
-          )}
-          ref={ref}
-          {...props}
-      />
-  )
-})
 Button.displayName = "Button"
 
-const Card = React.forwardRef<
-    HTMLDivElement,
-    React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-    <div
-        ref={ref}
-        className={cn(
-            "rounded-lg border bg-card text-card-foreground shadow-sm",
-            className
-        )}
-        {...props}
-    />
-))
 Card.displayName = "Card"
 
-const CardContent = React.forwardRef<
-    HTMLDivElement,
-    React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
-))
 CardContent.displayName = "CardContent"
 
-const Slider = React.forwardRef<
-    React.ElementRef<typeof SliderPrimitive.Root>,
-    React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root>
->(({ className, ...props }, ref) => (
-    <SliderPrimitive.Root
-        ref={ref}
-        className={cn("relative flex w-full touch-none select-none items-center", className)}
-        {...props}
-    >
-      <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary">
-        <SliderPrimitive.Range className="absolute h-full bg-primary" />
-      </SliderPrimitive.Track>
-      <SliderPrimitive.Thumb className="block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" />
-    </SliderPrimitive.Root>
-))
 Slider.displayName = SliderPrimitive.Root.displayName
 
 type MediaType = "image" | "video"
@@ -144,7 +45,7 @@ export default function VectorizeClone() {
   const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
     const droppedFile = e.dataTransfer.files[0]
-    if (droppedFile && droppedFile.type.startsWith("image/")) {
+    if (droppedFile && (droppedFile.type.startsWith("image/") || droppedFile.type.startsWith("video/"))) {
       setFile(droppedFile)
       const reader = new FileReader()
       reader.onloadend = () => {
@@ -252,9 +153,6 @@ export default function VectorizeClone() {
     }
   }, [file, preview, previewVideo])
 
-  function handleActionCreateVideo() {
-
-  }
 
   return (
       <div className="container mx-auto p-4 max-w-4xl">
@@ -359,13 +257,7 @@ export default function VectorizeClone() {
               >
                 {mediaType === "image" ? "Process Image" : "Process Video"}
               </Button>
-              <Button
-                  className="flex-1"
-                  onClick={handleActionCreateVideo}
-                  style={{ backgroundColor: getSliderColor(sliderValue) }}
-              >
-                Create Video
-              </Button>
+
               {file && (preview || previewVideo) && (
                   <Button
                       variant="outline"
